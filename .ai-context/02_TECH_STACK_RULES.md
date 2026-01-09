@@ -26,7 +26,14 @@ Sistem ini didesain untuk dikembangkan menjadi **Mobile Apps (React Native/Expo)
 * **Structure:** `/public/flyers` (Public access), `/private/receipts` (Auth required).
 * **Optimization:** Gambar harus di-compress sebelum upload (gunakan `sharp` atau sejenisnya di backend/edge).
 
-## 4. Deployment Environment
+## 4. Data Safety & Logging Strategy (CRITICAL)
+* **Soft Delete:** ALL critical data (Users, Transactions, Members) MUST implement Soft Delete (`deleted_at`). Hard delete is strictly forbidden except for cleaning up logs.
+* **Audit Logging:**
+    * Setiap aksi *mutasi* data (Create, Update, Delete) harus dicatat di tabel terpisah (`audit_logs` atau schema terpisah).
+    * Data yang dicatat: `who` (user_id), `what` (action), `where` (resource/table), `when` (timestamp), `metadata` (JSON snapshot before/after).
+    * **Performance:** Logging harus bersifat *asynchronous* (fire-and-forget) agar tidak memperlambat respon user.
+
+## 5. Deployment Environment
 * **Development:** Localhost (Bun).
 * **Frontend Production:** Cloudflare Pages / Vercel.
 * **Backend Production:** Supabase Edge Functions / Railway / VPS (Dockerized).

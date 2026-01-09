@@ -22,7 +22,45 @@ Before writing a single line of code, you MUST follow this sequence:
 * **Comments:** Explain "WHY" not "WHAT". Complex logic must be commented.
 * **Modular Code:** Function max 50 lines. Component max 150 lines. Break it down.
 
-## 4. Specific Custom Instructions
+## 4. Knowledge Retrieval & MCP Usage (CRITICAL)
+* **Context7 MCP / Live Search:** You MUST utilize **Context7 MCP** (or available web search tools) to fetch the latest documentation before implementing features.
+* **Avoid Knowledge Cut-off:** Do NOT rely solely on your training data for rapidly evolving libraries. Always verify the latest syntax for:
+    * **Bun** (Latest v1.x updates)
+    * **Hono** (Middleware patterns & Zod OpenAPI)
+    * **TanStack Query** (v5 breaking changes regarding `isError`, `isPending`, etc.)
+    * **Drizzle ORM** (Latest migration commands & query builder syntax)
+* **Verification:** If a generated code snippet conflicts with the latest official docs found via MCP, **prioritize the live docs** and explicitly mention the update in your response.
+
+## 5. Documentation Deliverables (The "Docs-First" Policy)
+Upon completing every **Feature** or **Phase**, you are REQUIRED to update the documentation in the `/docs` folder. Do not wait for a separate request.
+
+**Required Documentation Files:**
+
+1.  **`/docs/TASKS-HISTORY.md`** (Changelog)
+    * Log what was implemented, modified, or fixed. Format: `[Date] - [Feature] - Details`.
+
+2.  **`/docs/CODE-DEEP-DIVE.md`** (Technical Manual)
+    * Explain the logic flow of the new feature.
+    * Example: "How the semi-auto payment verification works in the backend."
+    * visualize data flow if possible (using Mermaid syntax).
+
+3.  **`/docs/LEARNING-JOURNEY.md`** (Beginner's Guide)
+    * Explain *WHY* we used a specific pattern or library.
+    * Target audience: The user (Junior/Learner) who wants to understand the "Magic" behind the code.
+    * Example: "Why we use `useMutation` here instead of `useQuery`."
+
+4.  **`/docs/TROUBLESHOOTING.md`** (Error Log)
+    * Record any errors encountered during development and their solutions.
+    * Example: "Fixing CORS issue on Hono when connecting from Vite."
+
+5.  **`/docs/WALKTHROUGH.md`** (User Manual)
+    * Step-by-step guide to test the feature.
+    * Example: "1. Open /register, 2. Fill form, 3. Check DB table 'users'..."
+
+6.  **`/docs/ARCHITECTURAL-DECISIONS.md`** (ADR)
+    * Record major architectural decisions (e.g., "Why we chose Drizzle over Prisma").
+
+## 6. Specific Custom Instructions
 * When I ask for a feature, **check existing files first**. Do not hallucinate file paths.
-* If you see a potential bottleneck (e.g., N+1 query problem), **warn me immediately** and suggest a fix using `with` in Drizzle or correct join strategy.
+* If you see a potential bottleneck (e.g., N+1 query problem), **warn me immediately**.
 * Always strictly adhere to the folder structure defined in the Turborepo setup.

@@ -16,7 +16,7 @@ NASUHA berdiri pasca pandemi Covid-19 (2021) oleh para pendiri yang pernah menga
 **Core Values:**
 1.  **Fundamental Akidah:** Menanamkan pemahaman bahwa riba haram mutlak, membangun tawakkal, dan memperbaiki hubungan dengan Allah.
 2.  **Edukasi Praktis:** Mengajarkan strategi negosiasi perbankan (bayar pokok saja), menghadapi debt collector dengan adab, dan manajemen cashflow.
-3.  **Kekeluargaan (Ukhuwah):** Membangun ikatan emosional "senasib seperjuangan" antar member (±5000 member per 2026) sesuai motto *Bersahabat di Dunia, Bertetangga di Surga*.
+3.  **Kekeluargaan (Ukhuwah):** Membangun ikatan emosional "senasib seperjuangan" antar member (**±3000 member per 2026**) sesuai motto *Bersahabat di Dunia, Bertetangga di Surga*.
 4.  **Volunteerism:** Seluruh panitia event adalah alumni yang "memantaskan diri" ditolong Allah dengan cara melayani umat tanpa bayaran (hanya konsumsi).
 
 ## 3. Struktur Program & Jenjang Pembelajaran

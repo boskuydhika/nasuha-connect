@@ -1,52 +1,45 @@
 # CURRENT-STATUS.md - Project Status & Next Steps
 
-> **Last Updated:** 2026-01-11 17:41 WIB
+> **Last Updated:** 2026-01-11 22:00 WIB
 
 > [!IMPORTANT]
-> **Untuk Agent Baru:** Baca juga `docs/TECHNICAL-DEBT.md` untuk prioritized improvements!
+> **Untuk Agent Baru:** Baca `.ai-context/` dulu, lalu `docs/TECHNICAL-DEBT.md`!
 
 ---
 
 ## ✅ Completed (Fase 1: Media & Marketing Center)
 
-### Backend
-1. **Database Schema** (`packages/db`)
-   - Tables: `users`, `roles`, `permissions`, `role_permissions`, `kordas`
-   - Tables: `media_contents`, `media_categories`
-   - Table: `audit_logs`
-   - All with soft delete support
+### Backend (100% Complete)
+| Component | Status |
+|:---|:---|
+| Database Schema (Drizzle) | ✅ |
+| Zod Validation Schemas | ✅ |
+| API Routes (auth, media, categories) | ✅ |
+| JWT Authentication | ✅ |
+| Permission-based Access Control | ✅ |
+| Seed Data (roles, permissions, kordas) | ✅ |
 
-2. **Zod Validation** (`packages/schema`)
-   - Phone normalization (any format → `08...`)
-   - Conditional media validation
-   - User impersonation schema
-
-3. **API Routes** (`apps/api`)
-   - Auth: login, register, /me, impersonate
-   - Media: CRUD with pagination, filtering
-   - Categories: CRUD
-   - JWT authentication working ✅
-   - Permission-based access control ✅
-
-4. **Seed Data**
-   - 3 roles: `super_admin`, `korda_admin`, `member`
-   - 21 permissions across 6 modules
-   - 3 sample kordas
+### TIER 1 Critical Fixes (100% Complete)
+| Fix | Status | Notes |
+|:---|:---|:---|
+| Env Validation | ✅ | `config.ts` - fail-fast at startup |
+| Rate Limiting | ✅ | Login 5/min, Register 3/min - **TESTED** |
+| Pino Logger | ✅ | `lib/logger.ts` - structured logging |
+| Database Indexes | ✅ | Added via SQL Editor |
 
 ### Dev Credentials
-- **Email:** `admin@nasuha.id`
-- **Password:** `admin123`
-- **Role:** `super_admin` (full access)
+```
+Email: admin@nasuha.id
+Password: admin123
+Role: super_admin (full access)
+```
 
 ---
 
-## 🔄 In Progress
+## 🔄 Next: Frontend Setup
 
-### Frontend Setup
-**Status:** Not started yet
-
-**Next Steps:**
-1. Install TailwindCSS di `apps/web`:
+### Steps:
+1. Install TailwindCSS:
    ```bash
    cd apps/web
    bun add tailwindcss @tailwindcss/vite
@@ -58,7 +51,7 @@
    ```
 
 3. Create pages:
-   - `/login` - Login page
+   - `/login` - Login page (mobile-first)
    - `/dashboard` - Main dashboard
    - `/media` - Media gallery
 
@@ -70,66 +63,47 @@
 1. [ ] **Frontend Setup** - TailwindCSS + Shadcn UI
 2. [ ] **Login Page** - Mobile-first design
 3. [ ] **Media Gallery** - Cards layout, search, filter
-4. [ ] **Supabase Storage** - File upload integration
 
 ### Medium Priority
-5. [ ] **Media Upload Form** - With preview
-6. [ ] **Categories Management**
-7. [ ] **User Management** (admin only)
-
-### Low Priority
-8. [ ] **Dark Mode Toggle**
-9. [ ] **PWA Support**
-10. [ ] **Auto-archive untuk media >3 bulan**
+4. [ ] **Media Upload** - With Supabase Storage
+5. [ ] **Categories Management**
+6. [ ] **User Management** (admin only)
 
 ---
 
-## 🔑 Key Design Decisions
+## ⚠️ Known Limitations
 
-| Decision | Details |
+| Issue | Workaround |
 |:---|:---|
-| **No API Versioning** | `/api/media` not `/api/v1/media` |
-| **Mobile-First** | Design for mobile first, then desktop |
-| **Drawers/Bottom Sheets** | For mobile actions |
-| **Cards** | For mobile data display |
-| **Soft Delete** | All business data has `deleted_at` |
-| **Async Audit Logs** | Fire-and-forget, don't block response |
+| Direct Connection (IPv6 only) | Use Transaction Pooler |
+| db:push may hang | Use SQL Editor for DDL |
+| Packages not hot-reloaded | Restart API manually |
 
 ---
 
-## 📁 Important Files
+## 🔑 Key Files
 
 | File | Purpose |
 |:---|:---|
-| `packages/db/.env` | Database connection |
-| `apps/api/.env` | API config (JWT_SECRET) |
-| `packages/db/seed.ts` | Default data seeder |
-| `.ai-context/*.md` | AI Agent constitution |
+| `apps/api/src/config.ts` | Env validation (fail-fast) |
+| `apps/api/src/lib/logger.ts` | Pino structured logger |
+| `apps/api/src/routes/auth.ts` | Auth + rate limiting |
+| `packages/db/.env` | DATABASE_URL only |
+| `apps/api/.env` | DATABASE_URL + JWT_SECRET |
 
 ---
 
-## 🐛 Known Issues
-
-1. **Hot Reload Warning** - Packages tidak di-watch oleh Bun, perlu restart manual jika edit `packages/*`
-
----
-
-## 📞 API Testing
+## 📞 Quick API Test
 
 ```bash
-# Start API server
+# Start API
 cd apps/api && bun run dev
 
-# Login
+# Login (returns JWT token)
 curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@nasuha.id","password":"admin123"}'
 
-# Get profile (with token)
-curl http://localhost:3000/api/auth/me \
-  -H "Authorization: Bearer <TOKEN>"
-
-# List media
-curl http://localhost:3000/api/media \
-  -H "Authorization: Bearer <TOKEN>"
+# Health check (should show database: connected)
+curl http://localhost:3000/health
 ```

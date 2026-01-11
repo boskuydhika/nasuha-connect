@@ -125,3 +125,38 @@ bun run db:seed
 - **.ai-context/02_TECH_STACK_RULES.md** - Added API Philosophy (No URI Versioning)
 - **.ai-context/05_UI_UX_DESIGN_SYSTEM.md** - Enhanced Mobile-First Design section
 
+---
+
+## [2026-01-11] - TIER 1 Critical Fixes Implementation
+
+### Added
+- **apps/api/src/config.ts** - Zod env validation at startup (fail-fast pattern)
+- **apps/api/src/lib/logger.ts** - Pino structured logger (replaces console.log)
+- **hono-rate-limiter** - Rate limiting package installed
+
+### Changed
+- **apps/api/src/routes/auth.ts** - Added rate limiting:
+  - Login: 5 attempts/minute per IP
+  - Register: 3 attempts/minute per IP
+- **apps/api/src/index.ts** - Uses config.ts + Pino logger + better health check
+- **apps/api/src/lib/auth.ts** - Uses config.JWT_SECRET instead of process.env
+- **packages/db/schema/media.ts** - Added 4 indexes (defined in schema)
+- **packages/db/drizzle.config.ts** - Prioritize DIRECT_URL for migrations
+
+### Database (via SQL Editor)
+```sql
+CREATE INDEX media_contents_type_idx ON media_contents(type);
+CREATE INDEX media_contents_korda_id_idx ON media_contents(korda_id);
+CREATE INDEX media_contents_uploaded_by_idx ON media_contents(uploaded_by);
+CREATE INDEX media_contents_is_archived_idx ON media_contents(is_archived);
+```
+
+### Tested
+- ✅ Env validation works at startup
+- ✅ Health check shows `database: connected`
+- ✅ Login returns JWT token
+- ✅ Rate limiting: attempts 1-5 return 401, attempts 6-7 return 429
+
+### Known Limitations
+- Direct Connection (port 5432) not available on IPv4-only networks
+- Use Transaction Pooler (port 6543) for app, SQL Editor for DDL

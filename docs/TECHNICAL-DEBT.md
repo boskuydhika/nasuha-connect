@@ -1,81 +1,49 @@
 # TECHNICAL-DEBT.md - Prioritized Improvements
 
-> **Last Updated:** 2026-01-11 17:41 WIB  
+> **Last Updated:** 2026-01-11 22:00 WIB  
 > **Reviewed By:** Claude Opus 4 + Gemini 2.5 Pro
-
-Dokumentasi teknikal debt dan prioritas perbaikan berdasarkan code review.
 
 ---
 
-## 🚨 TIER 1: WAJIB SEKARANG (Critical & Quick Win)
+## ✅ TIER 1: COMPLETED
 
-*Kerjain sebelum lanjut fitur lain. Estimasi: 2-3 jam total.*
+*All critical fixes implemented and tested!*
 
-| # | Issue | Description | Est. Time |
+| # | Issue | Status | Notes |
 |:---|:---|:---|:---|
-| 1 | **Env Validation** | Fail-fast at startup, bukan crash mid-request | 30 min |
-| 2 | **Rate Limiting** | Proteksi brute-force di `/auth/login` dan `/auth/register` | 30 min |
-| 3 | **Database Indexes** | Index di `users(email)`, `kordas(code)`, `media(type, kordaId)` | 30 min |
-| 4 | **Pino Logger** | Replace `console.log/error` dengan structured logger | 45 min |
-
-### Implementation Notes:
-
-#### 1. Env Validation
-```typescript
-// apps/api/src/config.ts
-import { z } from 'zod'
-
-const envSchema = z.object({
-  DATABASE_URL: z.string().url(),
-  JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 chars'),
-  API_PORT: z.coerce.number().default(3000),
-  CORS_ORIGIN: z.string().default('http://localhost:5173'),
-})
-
-export const config = envSchema.parse(process.env)
-```
-
-#### 2. Rate Limiting
-```bash
-bun add hono-rate-limiter
-```
-
-#### 3. Database Indexes
-```typescript
-// packages/db/schema/auth.ts
-export const users = pgTable('users', {...}, (table) => ({
-  emailIdx: uniqueIndex('users_email_idx').on(table.email),
-}))
-```
+| 1 | **Env Validation** | ✅ DONE | `apps/api/src/config.ts` |
+| 2 | **Rate Limiting** | ✅ DONE | Login 5/min, Register 3/min - TESTED |
+| 3 | **Database Indexes** | ✅ DONE | Added via SQL Editor |
+| 4 | **Pino Logger** | ✅ DONE | `apps/api/src/lib/logger.ts` |
 
 ---
 
 ## ⚠️ TIER 2: SAMBIL JALAN (Important)
 
-*Kerjain barengan pas develop fitur baru. Jangan ditumpuk di akhir.*
+*Kerjain barengan pas develop fitur baru.*
 
 | # | Issue | Description |
 |:---|:---|:---|
-| 5 | **Extended Seeding** | Dummy users (50), media (20), categories untuk testing UI |
-| 6 | **Password Strength** | Zod validation: min 8 char, uppercase, number |
-| 7 | **OpenAPI/Swagger** | `@hono/zod-openapi` - dokumentasi otomatis tiap bikin route |
-| 8 | **Better Health Check** | Check database connectivity, bukan cuma return `{status: 'ok'}` |
+| 5 | **Extended Seeding** | Dummy users (50), media (20), categories |
+| 6 | **Password Strength** | Zod: min 8 char, uppercase, number |
+| 7 | **OpenAPI/Swagger** | `@hono/zod-openapi` dokumentasi otomatis |
+| 8 | ~~Better Health Check~~ | ✅ Already done (checks DB connectivity) |
 
 ---
 
-## ⏳ TIER 3: NANTI AJA (Before Production)
+## ⏳ TIER 3: BEFORE PRODUCTION
 
-*Kerjain kalau FASE 1 MVP udah stable.*
+*Kerjain kalau MVP Fase 1 udah stable.*
 
 | # | Issue | Description |
 |:---|:---|:---|
-| 9 | **Unit/Integration Tests** | Minimal auth routes + critical business logic |
-| 10 | **Migrations vs Push** | Switch dari `db:push` ke `db:generate` + `db:migrate` |
-| 11 | **CI/CD Pipeline** | `.github/workflows/ci.yml` - typecheck, lint, test on push |
-| 12 | **Sentry/GlitchTip** | Error monitoring dengan alerting ke Email/Telegram |
-| 13 | **Refresh Token** | JWT expiry + refresh token pattern |
+| 9 | **Unit/Integration Tests** | Auth routes + critical logic |
+| 10 | **Migrations vs Push** | Switch ke `db:generate` + `db:migrate` |
+| 11 | **CI/CD Pipeline** | `.github/workflows/ci.yml` |
+| 12 | **Sentry/GlitchTip** | Error monitoring + alerting |
+| 13 | **Refresh Token** | JWT expiry + refresh pattern |
 | 14 | **Forgot Password** | Password reset via email |
-| 15 | **Graceful Shutdown** | Handle SIGTERM/SIGINT properly |
+| 15 | **Graceful Shutdown** | Handle SIGTERM/SIGINT |
 
 ---
 
@@ -83,24 +51,28 @@ export const users = pgTable('users', {...}, (table) => ({
 
 | Item | Status |
 |:---|:---|
-| Constitution Files (`.ai-context/`) | ✅ Comprehensive |
-| Dynamic RBAC | ✅ Flexible |
-| Soft Delete Pattern | ✅ Consistent |
-| Async Audit Logging | ✅ Non-blocking |
-| Zod Shared Schemas | ✅ Type-safe |
-| Phone Normalization | ✅ Smart helper |
-| No API Versioning | ✅ Clean URLs |
-| Basic Seeding (roles/permissions/kordas) | ✅ Done |
+| Constitution Files (`.ai-context/`) | ✅ |
+| Dynamic RBAC | ✅ |
+| Soft Delete Pattern | ✅ |
+| Async Audit Logging | ✅ |
+| Zod Shared Schemas | ✅ |
+| Phone Normalization | ✅ |
+| No API Versioning | ✅ |
+| Basic Seeding | ✅ |
+| **Env Validation (fail-fast)** | ✅ NEW |
+| **Rate Limiting (auth)** | ✅ NEW |
+| **Pino Structured Logger** | ✅ NEW |
+| **Database Indexes** | ✅ NEW |
+| **Health Check (DB connectivity)** | ✅ NEW |
 
 ---
 
-## 📋 Action Plan untuk Next Session
+## 📋 Next Steps for Agent
 
-Agent berikutnya harus:
-1. **Eksekusi TIER 1** dulu (Env Validation, Rate Limiting, Indexes, Pino)
-2. **Extend Seeding** dengan dummy users & media
-3. **Lanjut Frontend Setup** (TailwindCSS + Shadcn UI)
-4. **Catat progress** di `TASKS-HISTORY.md`
+1. ✅ ~~TIER 1 Complete~~
+2. **Setup Frontend** - TailwindCSS + Shadcn UI
+3. **Build Login Page** - Mobile-first design
+4. TIER 2 items sambil develop frontend
 
 ---
 

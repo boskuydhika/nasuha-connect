@@ -181,3 +181,23 @@ CREATE INDEX media_contents_is_archived_idx ON media_contents(is_archived);
 - ✅ Login API Integration tested via Browser
 - ✅ Error Handling (Invalid Credentials) verified
 - ✅ UI Feedback (Sonner/Toaster) fixed and verified
+
+## [2026-01-12] - Dashboard Shell (Custom Premium)
+
+### Added
+- **Protected Layout:** `src/layouts/protected-layout.tsx` (Auth Guard)
+- **App Sidebar:** `src/components/layout/app-sidebar.tsx` (Responsive, Desktop + Mobile)
+- **Header:** `src/components/layout/header.tsx` (Theme Toggle, User Nav, Mobile Trigger)
+- **User Components:** `UserNav` (Dropdown with Logout)
+- **Overview Page:** `src/pages/dashboard/overview.tsx` (Stats Placeholder)
+
+### Implementation Details
+- Built a **Custom Premium Shell** using Shadcn primitives (`Sheet`, `Dropdown`, `Avatar`).
+- Avoided "Template Kit" bloat by manually composing layout components.
+- Integrated `lucide-react` icons for navigation.
+- Connected Logout to clear `localStorage` and redirect.
+
+### Verifications
+- ✅ Dashboard Access (Redirects if not logged in)
+- ✅ Sidebar & Branding Visibility verified via Browser Agent
+- ✅ Logout Flow verified

@@ -65,6 +65,7 @@
 | **Database Indexes** | ✅ NEW |
 | **Frontend Setup (Tailwind v4)** | ✅ NEW |
 | **Login Page (Premium UI)** | ✅ NEW |
+| **Dashboard Shell (Custom)** | ✅ NEW |
 
 ---
 
@@ -72,9 +73,9 @@
 
 1. ✅ ~~TIER 1 Complete~~
 2. ✅ ~~Frontend Setup & Login~~
-3. **Build Dashboard Shell** - Sidebar, Header, Protected Routes
-4. **Media Gallery Implementation**
-5. TIER 2 items completion
+3. ✅ ~~Build Dashboard Shell~~
+4. **Media Gallery Implementation** - Cards, Upload, Filter
+5. **Users Management** - Table, Role assignment
 
 ---
 

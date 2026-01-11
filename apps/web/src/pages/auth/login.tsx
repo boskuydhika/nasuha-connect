@@ -38,9 +38,10 @@ export default function LoginPage() {
                 throw new Error(data.error?.message || "Login failed")
             }
 
-            // Success - Redirect or Store Token
-            alert("Login Success! Token: " + data.data.token.substring(0, 10) + "...")
-            console.log(data)
+            // Success - Store Token & Redirect
+            localStorage.setItem("token", data.data.token)
+            localStorage.setItem("user", JSON.stringify(data.data.user))
+            window.location.href = "/dashboard"
 
         } catch (err: any) {
             setError(err.message)

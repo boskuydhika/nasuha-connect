@@ -1,6 +1,9 @@
 # CURRENT-STATUS.md - Project Status & Next Steps
 
-> **Last Updated:** 2026-01-11 16:39 WIB
+> **Last Updated:** 2026-01-11 17:41 WIB
+
+> [!IMPORTANT]
+> **Untuk Agent Baru:** Baca juga `docs/TECHNICAL-DEBT.md` untuk prioritized improvements!
 
 ---
 

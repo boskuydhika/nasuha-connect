@@ -30,3 +30,20 @@ Dokumentasi perubahan dan fitur yang diimplementasikan.
 - `drizzle-kit` ^0.30.4
 - `postgres` ^3.4.5
 - `zod` ^3.24.1
+
+---
+
+## [2026-01-11] - Database Seed Script
+
+### Added
+- **packages/db/seed.ts** - Seed script untuk data awal
+  - 3 default roles: `super_admin`, `korda_admin`, `member`
+  - 21 permissions across 6 modules (users, roles, korda, media, audit)
+  - Role-permission assignments (super_admin = all, korda_admin = limited, member = read-only)
+  - 3 sample kordas: Bekasi, Jakarta Timur, Bandung
+
+### Usage
+```bash
+cd packages/db
+bun run db:seed
+```

@@ -21,19 +21,28 @@ Sistem ini didesain untuk dikembangkan menjadi **Mobile Apps (React Native/Expo)
 2.  **Shared Packages:** Logika bisnis, Tipe TypeScript, dan Validasi Zod harus diletakkan di `packages/` agar bisa di-import oleh Web (sekarang) dan Mobile (nanti).
 3.  **Authentication:** Gunakan pendekatan stateless (JWT) yang aman, siap untuk multi-platform auth.
 
-## 3. Storage Strategy
+## 3. API Philosophy (CRITICAL)
+* **NO URI VERSIONING:** Routes harus bersih tanpa prefix versi (Inspired by Eko Kurniawan Khannedy).
+    * ✅ `/api/media`, `/api/auth/login`
+    * ❌ `/api/v1/media`, `/api/v2/auth/login`
+* **Backward Compatibility:** Jika ada breaking changes, handle via header atau query param, bukan URI version.
+* **Standard Response Format:**
+    * Success: `{ success: true, data: {...}, meta?: {...} }`
+    * Error: `{ success: false, error: { code: string, message: string } }`
+
+## 4. Storage Strategy
 * **Provider:** Supabase Storage (S3 Compatible).
 * **Structure:** `/public/flyers` (Public access), `/private/receipts` (Auth required).
 * **Optimization:** Gambar harus di-compress sebelum upload (gunakan `sharp` atau sejenisnya di backend/edge).
 
-## 4. Data Safety & Logging Strategy (CRITICAL)
+## 5. Data Safety & Logging Strategy (CRITICAL)
 * **Soft Delete:** ALL critical data (Users, Transactions, Members) MUST implement Soft Delete (`deleted_at`). Hard delete is strictly forbidden except for cleaning up logs.
 * **Audit Logging:**
     * Setiap aksi *mutasi* data (Create, Update, Delete) harus dicatat di tabel terpisah (`audit_logs` atau schema terpisah).
     * Data yang dicatat: `who` (user_id), `what` (action), `where` (resource/table), `when` (timestamp), `metadata` (JSON snapshot before/after).
     * **Performance:** Logging harus bersifat *asynchronous* (fire-and-forget) agar tidak memperlambat respon user.
 
-## 5. Deployment Environment
+## 6. Deployment Environment
 * **Development:** Localhost (Bun).
 * **Frontend Production:** Cloudflare Pages / Vercel.
 * **Backend Production:** Supabase Edge Functions / Railway / VPS (Dockerized).

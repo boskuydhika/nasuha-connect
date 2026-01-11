@@ -55,8 +55,11 @@ app.get('/health', (c) => {
 // =============================================================================
 
 // Mount routes under /api (NO URI VERSIONING - Eko PZN Philosophy)
+import authRoutes from './routes/auth'
+
 const api = new Hono()
 
+api.route('/auth', authRoutes)
 api.route('/media', mediaRoutes)
 api.route('/categories', categoryRoutes)
 

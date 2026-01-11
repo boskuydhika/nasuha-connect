@@ -7,9 +7,12 @@
 
 ## 2. Component Usage Rules
 * **Layout:** Use a consistent `DashboardLayout` for authenticated pages.
-* **Responsive:**
-    * **Mobile First approach.** Design for small screens first, then `md:`, `lg:`.
-    * Touch targets must be min 44px on mobile (Buttons/Inputs).
+* **Mobile-First Design (CRITICAL):**
+    * Design for **small screens FIRST**, then scale up with `md:`, `lg:`.
+    * Touch targets MUST be minimum **44px** on mobile (Buttons/Inputs).
+    * **Drawers/Bottom Sheets:** Use for mobile actions (create, edit, filter).
+    * **Cards:** Use for mobile data display (list items, summaries).
+    * **Swipe Actions:** Consider swipe-to-delete/archive for list items.
 * **Feedback:**
     * Use `Skeleton` loaders while fetching data (No spinning spinners unless for submit actions).
     * Use `Toaster` (Sonner) for success/error notifications.

@@ -80,3 +80,48 @@ bun run db:seed
 - Korda-level data isolation (korda_admin only sees their own data)
 - Soft delete for all resources
 - Audit logging for all mutations
+
+---
+
+## [2026-01-11] - Auth Routes & Testing
+
+### Added
+- **apps/api/src/routes/auth.ts** - Authentication endpoints:
+  - `POST /api/auth/login` - User login, returns JWT token
+  - `POST /api/auth/register` - Create user (admin only)
+  - `GET /api/auth/me` - Get current user profile with permissions
+  - `POST /api/auth/impersonate` - Impersonate user (requires `users:impersonate`)
+
+- **packages/db/create-dev-user.ts** - Script to create dev super_admin user
+
+### Fixed
+- `.env` file encoding issue (PowerShell echo creates unicode, fixed with ASCII)
+
+### Tested
+- Login API verified working ✅
+- JWT token generation confirmed
+- Permission checking functional
+
+---
+
+## [2026-01-11] - Documentation Update for Handoff
+
+### Updated
+- **README.md** - Comprehensive project overview with:
+  - Quick start guide
+  - Project structure
+  - API endpoints table
+  - Tech stack
+  - Instructions for AI agents
+
+- **docs/CURRENT-STATUS.md** (NEW) - Project status including:
+  - Completed items checklist
+  - In-progress work
+  - Prioritized TODO list
+  - Key design decisions
+  - API testing commands
+
+### Constitution Updates
+- **.ai-context/02_TECH_STACK_RULES.md** - Added API Philosophy (No URI Versioning)
+- **.ai-context/05_UI_UX_DESIGN_SYSTEM.md** - Enhanced Mobile-First Design section
+

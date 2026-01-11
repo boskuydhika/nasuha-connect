@@ -47,3 +47,36 @@ Dokumentasi perubahan dan fitur yang diimplementasikan.
 cd packages/db
 bun run db:seed
 ```
+
+---
+
+## [2026-01-11] - Media Center API Routes
+
+### Added
+- **apps/api** - Hono API server dengan fitur:
+  - `src/lib/response.ts` - Standard API response helpers (success/error)
+  - `src/lib/db.ts` - Database connection
+  - `src/lib/auth.ts` - JWT middleware + permission checking
+  - `src/lib/audit.ts` - Fire-and-forget audit logger
+  - `src/routes/media.ts` - Full CRUD untuk media contents
+  - `src/routes/categories.ts` - Full CRUD untuk categories
+
+### API Endpoints
+> **NO URI VERSIONING** - Routes are clean without version prefix (Eko PZN Philosophy)
+
+| Method | Endpoint | Permission | Description |
+|:---|:---|:---|:---|
+| GET | `/api/media` | `media:read` | List media (paginated, filterable) |
+| GET | `/api/media/:id` | `media:read` | Get single media |
+| POST | `/api/media` | `media:create` | Create media |
+| PATCH | `/api/media/:id` | `media:update` | Update media |
+| DELETE | `/api/media/:id` | `media:delete` | Soft delete media |
+| POST | `/api/media/:id/archive` | `media:archive` | Archive media |
+| GET | `/api/categories` | `media:read` | List categories |
+| POST | `/api/categories` | `media:create` | Create category |
+
+### Features
+- JWT authentication with permission-based access control
+- Korda-level data isolation (korda_admin only sees their own data)
+- Soft delete for all resources
+- Audit logging for all mutations

@@ -126,3 +126,58 @@ phoneSchema.transform((val) => {
 
 ### Konsekuensi
 - Helper function `formatWhatsAppLink()` untuk generate link wa.me/62...
+
+---
+
+## ADR-006: No URI Versioning
+
+**Tanggal:** 2026-01-11  
+**Status:** Accepted
+
+### Konteks
+Banyak API menggunakan versioning seperti `/api/v1/...` tapi menambah kompleksitas.
+
+### Keputusan
+Menggunakan **NO URI VERSIONING** (inspired by Eko Kurniawan Khannedy).
+
+### Alasan
+1. **Simplicity** - URL lebih bersih dan mudah diingat
+2. **Single Source of Truth** - Hanya satu versi API yang aktif
+3. **Backward Compatibility** - Handle via header atau query param jika perlu
+4. **Less Maintenance** - Tidak perlu maintain multiple API versions
+
+### Implementasi
+```
+✅ /api/media
+✅ /api/categories
+❌ /api/v1/media
+❌ /api/v2/media
+```
+
+### Konsekuensi
+- Breaking changes harus dikomunikasikan dengan jelas ke client
+- Deprecation strategy via response headers jika perlu
+
+---
+
+## ADR-007: Frontend Stack & Mobile-First Design
+
+**Tanggal:** 2026-01-11  
+**Status:** Accepted
+
+### Keputusan
+Frontend stack:
+- **React** + **Vite** (TypeScript)
+- **TailwindCSS** (Styling)
+- **Shadcn/UI** (Component Library)
+
+### Design Philosophy
+- **Mobile-First** - Design for mobile screens first
+- **Drawers/Bottom Sheets** - For mobile actions
+- **Cards** - For mobile data display
+- **Touch-friendly** - Minimum touch target 44px
+
+### Alasan
+1. **Shadcn/UI** - Beautiful, accessible, customizable components
+2. **TailwindCSS** - Utility-first, rapid development
+3. **Mobile-First** - Target audience adalah member NASUHA yang akses via HP

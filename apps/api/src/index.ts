@@ -3,11 +3,17 @@
  * Main entry point for Hono server
  */
 
-import 'dotenv/config'
+// Import config first - will fail-fast if env invalid
+import { config } from './config'
+
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { logger } from 'hono/logger'
+import { logger as honoLogger } from 'hono/logger'
+import { logger, logError } from './lib/logger'
+import { db } from './lib/db'
+import { sql } from 'drizzle-orm'
 
+import authRoutes from './routes/auth'
 import mediaRoutes from './routes/media'
 import categoryRoutes from './routes/categories'
 
@@ -22,13 +28,13 @@ const app = new Hono()
 // =============================================================================
 
 // Request logging
-app.use('*', logger())
+app.use('*', honoLogger())
 
 // CORS configuration
 app.use(
   '*',
   cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: config.CORS_ORIGIN,
     credentials: true,
   })
 )
@@ -46,8 +52,15 @@ app.get('/', (c) => {
   })
 })
 
-app.get('/health', (c) => {
-  return c.json({ status: 'ok' })
+// Health check with database connectivity
+app.get('/health', async (c) => {
+  try {
+    await db.execute(sql`SELECT 1`)
+    return c.json({ status: 'ok', database: 'connected' })
+  } catch (err) {
+    logError('health-check', err)
+    return c.json({ status: 'degraded', database: 'disconnected' }, 503)
+  }
 })
 
 // =============================================================================
@@ -55,8 +68,6 @@ app.get('/health', (c) => {
 // =============================================================================
 
 // Mount routes under /api (NO URI VERSIONING - Eko PZN Philosophy)
-import authRoutes from './routes/auth'
-
 const api = new Hono()
 
 api.route('/auth', authRoutes)
@@ -87,7 +98,7 @@ app.notFound((c) => {
 // =============================================================================
 
 app.onError((err, c) => {
-  console.error('[UNHANDLED ERROR]', err)
+  logError('unhandled-error', err, { path: c.req.path, method: c.req.method })
   return c.json(
     {
       success: false,
@@ -104,11 +115,9 @@ app.onError((err, c) => {
 // SERVER START
 // =============================================================================
 
-const port = Number(process.env.API_PORT) || 3000
-
-console.log(`🚀 NASUHA Connect API running on http://localhost:${port}`)
+logger.info({ port: config.API_PORT }, `🚀 NASUHA Connect API running on http://localhost:${config.API_PORT}`)
 
 export default {
-  port,
+  port: config.API_PORT,
   fetch: app.fetch,
 }

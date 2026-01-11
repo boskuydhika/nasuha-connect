@@ -3,12 +3,13 @@
  * JWT verification and permission checking
  */
 
-import type { Context, MiddlewareHandler } from 'hono'
+import type { MiddlewareHandler } from 'hono'
 import { createMiddleware } from 'hono/factory'
 import * as jose from 'jose'
 import { eq, and, isNull } from 'drizzle-orm'
-import { db, users, roles, rolePermissions, permissions } from './db'
+import { db, users } from './db'
 import { error, ERROR_CODES } from './response'
+import { config } from '../config'
 
 // =============================================================================
 // TYPES
@@ -46,13 +47,8 @@ declare module 'hono' {
 // JWT HELPERS
 // =============================================================================
 
-function getJwtSecret() {
-    const secret = process.env.JWT_SECRET
-    if (!secret) {
-        throw new Error('JWT_SECRET is not set')
-    }
-    return new TextEncoder().encode(secret)
-}
+// JWT secret is validated at startup via config.ts (fail-fast)
+const jwtSecret = new TextEncoder().encode(config.JWT_SECRET)
 
 /**
  * Generate JWT token for a user
@@ -63,9 +59,6 @@ export async function generateToken(user: {
     roleId: string
     kordaId: string | null
 }): Promise<string> {
-    const secret = getJwtSecret()
-    const expiresIn = process.env.JWT_EXPIRES_IN || '7d'
-
     const token = await new jose.SignJWT({
         sub: user.id,
         email: user.email,
@@ -74,8 +67,8 @@ export async function generateToken(user: {
     })
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
-        .setExpirationTime(expiresIn)
-        .sign(secret)
+        .setExpirationTime(config.JWT_EXPIRES_IN)
+        .sign(jwtSecret)
 
     return token
 }
@@ -85,8 +78,7 @@ export async function generateToken(user: {
  */
 export async function verifyToken(token: string): Promise<JwtPayload | null> {
     try {
-        const secret = getJwtSecret()
-        const { payload } = await jose.jwtVerify(token, secret)
+        const { payload } = await jose.jwtVerify(token, jwtSecret)
         return payload as unknown as JwtPayload
     } catch {
         return null

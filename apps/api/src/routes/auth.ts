@@ -1,18 +1,63 @@
 /**
  * Auth Routes
  * Login, register, and user management endpoints
+ * 
+ * Rate limited to prevent brute-force attacks
  */
 
 import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
+import { rateLimiter } from 'hono-rate-limiter'
 import { eq, and, isNull } from 'drizzle-orm'
-import { z } from 'zod'
 
 import { db, users, roles, AUDIT_ACTIONS } from '../lib/db'
 import { success, error, ERROR_CODES } from '../lib/response'
 import { authMiddleware, generateToken, requirePermission } from '../lib/auth'
 import { logAudit, getClientInfo } from '../lib/audit'
+import { logError } from '../lib/logger'
 import { loginSchema, createUserSchema, impersonateUserSchema } from '@nasuha/schema'
+
+// =============================================================================
+// RATE LIMITER SETUP
+// =============================================================================
+
+/**
+ * Rate limiter for login - 5 attempts per minute per IP
+ */
+const loginRateLimiter = rateLimiter({
+    windowMs: 60 * 1000, // 1 minute
+    limit: 5, // 5 attempts
+    standardHeaders: 'draft-6',
+    keyGenerator: (c) => c.req.header('x-forwarded-for') || c.req.header('x-real-ip') || 'unknown',
+    handler: (c) => {
+        return c.json({
+            success: false,
+            error: {
+                code: 'RATE_LIMIT_EXCEEDED',
+                message: 'Terlalu banyak percobaan login. Coba lagi dalam 1 menit.',
+            },
+        }, 429)
+    },
+})
+
+/**
+ * Rate limiter for register - 3 attempts per minute per IP
+ */
+const registerRateLimiter = rateLimiter({
+    windowMs: 60 * 1000, // 1 minute
+    limit: 3, // 3 attempts
+    standardHeaders: 'draft-6',
+    keyGenerator: (c) => c.req.header('x-forwarded-for') || c.req.header('x-real-ip') || 'unknown',
+    handler: (c) => {
+        return c.json({
+            success: false,
+            error: {
+                code: 'RATE_LIMIT_EXCEEDED',
+                message: 'Terlalu banyak percobaan registrasi. Coba lagi dalam 1 menit.',
+            },
+        }, 429)
+    },
+})
 
 // =============================================================================
 // ROUTE SETUP
@@ -26,6 +71,7 @@ const auth = new Hono()
 
 auth.post(
     '/login',
+    loginRateLimiter,
     zValidator('json', loginSchema),
     async (c) => {
         const body = c.req.valid('json')
@@ -89,7 +135,7 @@ auth.post(
                 },
             })
         } catch (err) {
-            console.error('[POST /auth/login]', err)
+            logError('auth/login', err)
             return error(c, ERROR_CODES.INTERNAL_ERROR, 'Login gagal', 500)
         }
     }
@@ -101,6 +147,7 @@ auth.post(
 
 auth.post(
     '/register',
+    registerRateLimiter,
     authMiddleware,
     requirePermission('users:create'),
     zValidator('json', createUserSchema),
@@ -168,7 +215,7 @@ auth.post(
                 isActive: newUser.isActive,
             })
         } catch (err) {
-            console.error('[POST /auth/register]', err)
+            logError('auth/register', err)
             return error(c, ERROR_CODES.DATABASE_ERROR, 'Gagal mendaftarkan user', 500)
         }
     }
@@ -218,7 +265,7 @@ auth.get('/me', authMiddleware, async (c) => {
             permissions,
         })
     } catch (err) {
-        console.error('[GET /auth/me]', err)
+        logError('auth/me', err)
         return error(c, ERROR_CODES.INTERNAL_ERROR, 'Gagal mengambil profil', 500)
     }
 })
@@ -287,7 +334,7 @@ auth.post(
                 warning: 'You are now impersonating this user. All actions will be logged.',
             })
         } catch (err) {
-            console.error('[POST /auth/impersonate]', err)
+            logError('auth/impersonate', err)
             return error(c, ERROR_CODES.INTERNAL_ERROR, 'Gagal melakukan impersonation', 500)
         }
     }

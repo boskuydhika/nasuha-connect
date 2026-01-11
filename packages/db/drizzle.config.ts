@@ -1,8 +1,18 @@
+/**
+ * Drizzle Kit Configuration
+ * 
+ * IMPORTANT: Uses DIRECT_URL for migrations (port 5432)
+ * The regular DATABASE_URL uses Transaction Pooler (port 6543) which hangs during migrations
+ */
+
 import 'dotenv/config'
 import { defineConfig } from 'drizzle-kit'
 
-if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL environment variable is required')
+// Prefer DIRECT_URL for migrations (port 5432), fallback to DATABASE_URL
+const migrationUrl = process.env.DIRECT_URL || process.env.DATABASE_URL
+
+if (!migrationUrl) {
+    throw new Error('DIRECT_URL or DATABASE_URL environment variable is required')
 }
 
 export default defineConfig({
@@ -10,9 +20,8 @@ export default defineConfig({
     out: './migrations',
     dialect: 'postgresql',
     dbCredentials: {
-        url: process.env.DATABASE_URL,
+        url: migrationUrl,
     },
-    // Use Supabase Transaction Pooler (port 6543) for serverless
     verbose: true,
     strict: true,
 })

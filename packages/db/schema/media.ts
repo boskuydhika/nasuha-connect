@@ -6,6 +6,7 @@
 import { relations } from 'drizzle-orm'
 import {
     boolean,
+    index,
     integer,
     pgEnum,
     pgTable,
@@ -75,7 +76,12 @@ export const mediaContents = pgTable('media_contents', {
     isArchived: boolean('is_archived').default(false).notNull(),
     archivedAt: timestamp('archived_at', { withTimezone: true }),
     ...timestamps,
-})
+}, (table) => [
+    index('media_contents_type_idx').on(table.type),
+    index('media_contents_korda_id_idx').on(table.kordaId),
+    index('media_contents_uploaded_by_idx').on(table.uploadedBy),
+    index('media_contents_is_archived_idx').on(table.isArchived),
+])
 
 export const mediaContentsRelations = relations(mediaContents, ({ one }) => ({
     category: one(mediaCategories, {

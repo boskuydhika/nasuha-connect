@@ -1,7 +1,7 @@
 # TECHNICAL-DEBT.md - Prioritized Improvements
 
 > **Last Updated:** 2026-01-11 22:00 WIB  
-> **Reviewed By:** Claude Opus 4 + Gemini 2.5 Pro
+> **Reviewed By:** Claude Opus 4.5 + Gemini 3 Pro
 
 ---
 
@@ -63,16 +63,18 @@
 | **Rate Limiting (auth)** | ✅ NEW |
 | **Pino Structured Logger** | ✅ NEW |
 | **Database Indexes** | ✅ NEW |
-| **Health Check (DB connectivity)** | ✅ NEW |
+| **Frontend Setup (Tailwind v4)** | ✅ NEW |
+| **Login Page (Premium UI)** | ✅ NEW |
 
 ---
 
 ## 📋 Next Steps for Agent
 
 1. ✅ ~~TIER 1 Complete~~
-2. **Setup Frontend** - TailwindCSS + Shadcn UI
-3. **Build Login Page** - Mobile-first design
-4. TIER 2 items sambil develop frontend
+2. ✅ ~~Frontend Setup & Login~~
+3. **Build Dashboard Shell** - Sidebar, Header, Protected Routes
+4. **Media Gallery Implementation**
+5. TIER 2 items completion
 
 ---
 

@@ -160,3 +160,24 @@ CREATE INDEX media_contents_is_archived_idx ON media_contents(is_archived);
 ### Known Limitations
 - Direct Connection (port 5432) not available on IPv4-only networks
 - Use Transaction Pooler (port 6543) for app, SQL Editor for DDL
+
+---
+
+## [2026-01-11] - Frontend Setup & Login Page
+
+### Added
+- **apps/web** - Initialized Shadcn UI + Tailwind CSS v4
+- **apps/web/src/pages/auth/login.tsx** - Premium Split Layout Login Page
+- **apps/web/src/components/ui** - Manual setup of Button, Input, Card, Toaster
+- **apps/web/src/index.css** - CSS-First Tailwind v4 Configuration
+
+### Design System (Implemented)
+- **Font:** Inter (Standard Google Fonts)
+- **Theme:** Dark Mode Default (Zinc 950)
+- **Login UI:** Split Layout (Brand Left / Form Right)
+
+### Verifications
+- ✅ Vite Proxy configured (`/api` -> `localhost:3000`)
+- ✅ Login API Integration tested via Browser
+- ✅ Error Handling (Invalid Credentials) verified
+- ✅ UI Feedback (Sonner/Toaster) fixed and verified

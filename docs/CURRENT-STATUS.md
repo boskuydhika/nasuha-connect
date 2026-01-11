@@ -16,44 +16,22 @@
 | Zod Validation Schemas | ✅ |
 | API Routes (auth, media, categories) | ✅ |
 | JWT Authentication | ✅ |
-| Permission-based Access Control | ✅ |
-| Seed Data (roles, permissions, kordas) | ✅ |
+| TIER 1 Critical Fixes | ✅ |
 
-### TIER 1 Critical Fixes (100% Complete)
-| Fix | Status | Notes |
+### Frontend (Basic Setup)
+| Component | Status | Notes |
 |:---|:---|:---|
-| Env Validation | ✅ | `config.ts` - fail-fast at startup |
-| Rate Limiting | ✅ | Login 5/min, Register 3/min - **TESTED** |
-| Pino Logger | ✅ | `lib/logger.ts` - structured logging |
-| Database Indexes | ✅ | Added via SQL Editor |
-
-### Dev Credentials
-```
-Email: admin@nasuha.id
-Password: admin123
-Role: super_admin (full access)
-```
+| Tailwind CSS v4 | ✅ | Configured with `@theme` |
+| Shadcn UI | ✅ | Manual setup (v4 compatible) |
+| Routing | ✅ | React Router Dom installed |
+| **Login Page** | ✅ | **Premium Split Layout (Inter)** |
 
 ---
 
-## 🔄 Next: Frontend Setup
+## 🔄 Next: Dashboard Implementation
 
 ### Steps:
-1. Install TailwindCSS:
-   ```bash
-   cd apps/web
-   bun add tailwindcss @tailwindcss/vite
-   ```
-
-2. Setup Shadcn UI:
-   ```bash
-   bunx --bun shadcn@latest init
-   ```
-
-3. Create pages:
-   - `/login` - Login page (mobile-first)
-   - `/dashboard` - Main dashboard
-   - `/media` - Media gallery
+1. **Verify Login Integration:** Test if `/api/auth/login` works from UI (CORS/Proxy check).
 
 ---
 

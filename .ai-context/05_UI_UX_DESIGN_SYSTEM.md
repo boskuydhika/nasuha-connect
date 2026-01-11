@@ -1,27 +1,32 @@
 # 05 - UI/UX Design System Guidelines
 
-## 1. Visual Philosophy
-* **Style:** Clean, Modern, Professional, trustworthy.
-* **Theme:** **Dark Mode First** (Sesuai preferensi developer), but fully support Light Mode toggle.
-* **Library:** **Shadcn UI** is the Source of Truth. Do not invent custom weird buttons unless necessary.
+## 1. Visual Philosophy ("Premium Tech")
+* **Style:** Clean, Professional, "Linear-like" aesthetics.
+* **Theme:** **Dark Mode Default**. Use `Zinc 950` (`#09090b`) instead of pure black for warmth.
+* **Depth:** Avoid heavy drop shadows in Dark Mode. Use **Inner Borders** (`ring-1 ring-white/10`) to define edges and depth.
+* **Library:** **Shadcn UI** is the Source of Truth.
 
-## 2. Component Usage Rules
-* **Layout:** Use a consistent `DashboardLayout` for authenticated pages.
-* **Mobile-First Design (CRITICAL):**
-    * Design for **small screens FIRST**, then scale up with `md:`, `lg:`.
-    * Touch targets MUST be minimum **44px** on mobile (Buttons/Inputs).
-    * **Drawers/Bottom Sheets:** Use for mobile actions (create, edit, filter).
-    * **Cards:** Use for mobile data display (list items, summaries).
-    * **Swipe Actions:** Consider swipe-to-delete/archive for list items.
-* **Feedback:**
-    * Use `Skeleton` loaders while fetching data (No spinning spinners unless for submit actions).
-    * Use `Toaster` (Sonner) for success/error notifications.
+## 2. Typography
+* **Primary Font:** **Inter** (Google Fonts).
+* **Rationale:** Gold standard for legibility, "super rapi", consistent across devices.
+* **Settings:** Use tight letter-spacing (`-0.01em` to `-0.02em`) for Headings to give a tighter, premium feel.
 
-## 3. Color Palette (Tailwind)
+## 3. Component Usage Rules
+* **Layout Strategy:**
+    * **Desktop Login:** Split Grid Layout or Grid Pattern Background. Never use a boring centered card on a white background.
+    * **Mobile Login:** **Native Feel**. No visible card borders. Inputs full-width. Touch targets min 44px.
+* **Micro-interactions:**
+    * **Inputs:** `focus-within:ring-2` with `transition-all duration-200`.
+    * **Buttons:** `active:scale-95` (tactile feedback).
+* **Lists/Data:**
+    * **Mobile:** Cards with "Swipe Actions" (future).
+    * **Desktop:** Data Tables (TanStack Table).
+
+## 4. Color Palette (Tailwind)
 * **Primary:** NASUHA Green/Gold (Customize `globals.css` variable `--primary`).
 * **Destructive:** Red (For Delete/Reject actions).
 * **Muted:** Gray (For secondary text/subtitles).
 
-## 4. Iconography
+## 5. Iconography
 * Use **Lucide React**.
-* Consistency: Use the same icon for the same action across the app (e.g., always `Trash2` for delete, not mixed with `Trash`).
+* Consistency: Use the same icon for the same action.
